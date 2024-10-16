@@ -97,7 +97,7 @@ def delete_file(filename):
         flash(f'{filename} deleted successfully.', 'success')
     else:
         flash('File not found.', 'error')
-    return redirect(url_for('list_files'))
+    return redirect(url_for('list_files',host='0,0,0,0')
 
 
 
