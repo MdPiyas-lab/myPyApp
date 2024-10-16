@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Files</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(0, 150, 136, 0.8), rgba(0, 0, 50, 0.8));
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 900px;
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px) saturate(150%);
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 16px;
+        }
+
+        .back-button {
+            background: rgba(0, 188, 212, 0.5);
+        }
+
+        .back-button:hover {
+            background: rgba(0, 188, 212, 0.8);
+        }
+
+        .files-button {
+            background: rgba(76, 175, 80, 0.5);
+        }
+
+        .files-button:hover {
+            background: rgba(76, 175, 80, 0.8);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .delete-button {
+            background: rgba(244, 67, 54, 0.5);
+        }
+
+        .delete-button:hover {
+            background: rgba(244, 67, 54, 0.8);
+        }
+    </style>
+    <script>
+        function confirmDelete(filename) {
+            if (confirm(`Are you sure you want to delete ${filename}?`)) {
+                document.getElementById(`delete-form-${filename}`).submit();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Files</h1>
+
+        <div class="button-container">
+            <a class="button back-button" href="{{ url_for('index') }}">Back</a>
+            <a class="button files-button" href="{{ url_for('list_files') }}">Refresh</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <li style="color: {{ 'lightgreen' if category == 'success' else 'red' }};">
+                            {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>{{ file }}</td>
+                        <td>
+                            <a class="button" href="{{ url_for('download_file', filename=file) }}">Download</a>
+                            <button class="button delete-button" 
+                                    onclick="confirmDelete('{{ file }}')">Delete</button>
+                            <form id="delete-form-{{ file }}" method="POST" 
+                                  action="{{ url_for('delete_file', filename=file) }}" style="display: none;"></form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">No files available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
