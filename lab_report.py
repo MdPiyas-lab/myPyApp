@@ -38,7 +38,7 @@ def add_text_to_pdf(input_pdf_path, output_pdf_path, text_positions):
             output.write(output_pdf_file)
 
 def generate_lab_report_pdf(board_roll, lab_report_no, lab_report_title, date_of_submission, teacher_name, subject_name):
-    output_pdf_path = f'output/lab_report_{lab_report_no}.pdf'
+    output_pdf_path = f'tmp/lab_report_{lab_report_no}.pdf'
     student_info = student_data.get(board_roll)
     if not student_info:
         return None  # Student not found
