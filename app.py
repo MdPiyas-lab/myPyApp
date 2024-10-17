@@ -3,7 +3,7 @@ import os
 from lab_report import generate_lab_report_pdf
 
 app = Flask(__name__)
-app.config['OUTPUT_FOLDER'] = 'output'  # Folder to store generated PDFs
+app.config['OUTPUT_FOLDER'] = 'tmp'  # Folder to store generated PDFs
 app.secret_key = 'your_secret_key'  # For flashing messages 
 
 # Teacher data
@@ -71,11 +71,11 @@ def generate_report():
 
 @app.route('/download/<filename>')
 def download_file(filename):
-    return send_file(os.path.join('output', filename), as_attachment=True)
+    return send_file(os.path.join('tmp', filename), as_attachment=True)
 
 @app.route('/files')
 def list_files():
-    """Lists all files in the output folder."""
+    """Lists all files in the tmp folder."""
     files = os.listdir(app.config['OUTPUT_FOLDER'])
     return render_template('files.html', files=files)
 
@@ -90,7 +90,7 @@ def download_lab_report(filename):
 
 @app.route('/delete/<filename>', methods=['POST'])
 def delete_file(filename):
-    """Delete a file from the output folder."""
+    """Delete a file from the tmp folder."""
     file_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
     if os.path.exists(file_path):
         os.remove(file_path)
